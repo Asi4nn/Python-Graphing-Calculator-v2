@@ -11,29 +11,84 @@ from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy_garden.graph import Graph, MeshLinePlot
 
-from math import sin, cos
+from math import sin, cos, tan
+from float_rounder import *
 
 
 class GraphPlot(RelativeLayout):
     def __init__(self, **kwargs):
         super(GraphPlot, self).__init__(**kwargs)
-        self.graph = Graph(xlabel="x", ylabel="y", x_ticks_minor=5, x_ticks_major=25, y_ticks_major=1,
+        self.y_range = 10
+        self.x_range = 10
+        self.range_multiplier = [2, 2.5, 2]
+        self.graph = Graph(xlabel="x", ylabel="y",
+                           x_ticks_minor=self.x_range/10, x_ticks_major=self.x_range/2,
+                           y_ticks_minor=self.y_range/10, y_ticks_major=self.y_range/2,
                            y_grid_label=True, x_grid_label=True, x_grid=True, y_grid=True,
-                           xmin=-0, xmax=50, ymin=-1, ymax=10, draw_border=False)
+                           xmin=-self.x_range, xmax=self.x_range, ymin=-self.y_range, ymax=self.y_range, draw_border=False)
         # graph.size = (1200, 400)
         # self.graph.pos = self.center
 
         self.plot = MeshLinePlot(color=[1, 1, 1, 1])
-        x = 0
+        x = -self.x_range
         self.plot.points = []
-        while x < 100:
+        while x < self.x_range:
             try:
-                self.plot.points.append((x, 1/(x)))
+                self.plot.points.append((x, x**3))
             except ZeroDivisionError:
                 pass
 
-            x += 0.01
-        #self.plot.points = [(x, cos(x/10)) for x in range(0, 101)]
+            x += self.x_range / 100
+        self.add_widget(self.graph)
+
+        self.graph.add_plot(self.plot)
+
+
+    def on_touch_down(self, touch):
+        if touch.is_mouse_scrolling:
+            # for whatever reason, the definition of scrollup and scrolldown are reversed
+            if touch.button == 'scrollup':
+                self.zoomOut()
+            elif touch.button == 'scrolldown':
+                self.zoomIn()
+        touch.pop()
+
+
+    def zoomIn(self):
+        print(self.x_range)
+        self.x_range = multiplyByFloat(self.x_range, 1/self.range_multiplier[0])
+        self.y_range = multiplyByFloat(self.y_range, 1/self.range_multiplier[0])
+        self.range_multiplier.insert(0, self.range_multiplier[2])
+        del self.range_multiplier[-1]
+        self.update()
+
+
+    def zoomOut(self):
+        print(self.x_range)
+        self.x_range = multiplyByFloat(self.x_range, self.range_multiplier[0])
+        self.y_range = multiplyByFloat(self.y_range, self.range_multiplier[0])
+        self.range_multiplier.append(self.range_multiplier[0])
+        self.range_multiplier.remove(self.range_multiplier[0])
+        self.update()
+
+
+    def update(self):
+        self.remove_widget(self.graph)
+        self.graph = Graph(xlabel="x", ylabel="y",
+                           x_ticks_minor=self.x_range/10, x_ticks_major=self.x_range/2,
+                           y_ticks_minor=self.y_range/10, y_ticks_major=self.y_range/2,
+                           y_grid_label=True, x_grid_label=True, x_grid=True, y_grid=True,
+                           xmin=-self.x_range, xmax=self.x_range, ymin=-self.y_range, ymax=self.y_range, draw_border=False)
+        self.plot = MeshLinePlot(color=[1, 1, 1, 1])
+        x = -self.x_range
+        self.plot.points = []
+        while x < self.x_range:
+            try:
+                self.plot.points.append((x, x**3))
+            except ZeroDivisionError:
+                pass
+
+            x += self.x_range / 100
         self.add_widget(self.graph)
 
         self.graph.add_plot(self.plot)
@@ -41,18 +96,17 @@ class GraphPlot(RelativeLayout):
 
 class GraphingCalculatorApp(App):
     def build(self):
-        scroll_view = ScrollView()
         grid_layout = GridLayout(cols=1, padding=20, spacing=20, size_hint_y=None)
         grid_layout.bind(minimum_size=grid_layout.setter('size'))
         graph = GraphPlot(size_hint_y=None, height=500)
-        label = Label(text="Hello World!", size_hint_y=None)
+        label = Label(size_hint_y=None, text='Python Graphing Calculator')
         grid_layout.add_widget(label)
         grid_layout.add_widget(graph)
-        scroll_view.add_widget(grid_layout)
 
-        # return grid_layout
-        return scroll_view
+        # app = GraphPlot()
+
+        return grid_layout
 
 
 if __name__ == '__main__':
-    VectorCalculatorApp().run()
+    GraphingCalculatorApp().run()

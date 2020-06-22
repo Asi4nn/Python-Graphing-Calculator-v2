@@ -1,0 +1,19 @@
+#:kivy 1.11.1
+'''
+<GraphingCalculator>:
+    GridLayout:
+        id: maingrid
+        minimum_size: maingrid.setter('size')
+        cols: 2
+        padding: 20
+        spacing: 20
+        size_hint_y: None
+
+        Label:
+            text: 'Python Graphing Calculator v2'
+            size_hint_y: None
+
+        GraphPlot:
+            size_hint_y: None
+            height: 500
+'''
