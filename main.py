@@ -34,7 +34,7 @@ class GraphPlot(RelativeLayout):
         self.plot.points = []
         while x < self.x_range:
             try:
-                self.plot.points.append((x, x**3))
+                self.plot.points.append((x, sin(x)))
             except ZeroDivisionError:
                 pass
 
@@ -51,7 +51,7 @@ class GraphPlot(RelativeLayout):
                 self.zoomOut()
             elif touch.button == 'scrolldown':
                 self.zoomIn()
-        touch.pop()
+        return True
 
 
     def zoomIn(self):
@@ -84,7 +84,7 @@ class GraphPlot(RelativeLayout):
         self.plot.points = []
         while x < self.x_range:
             try:
-                self.plot.points.append((x, x**3))
+                self.plot.points.append((x, sin(x)))
             except ZeroDivisionError:
                 pass
 
@@ -102,8 +102,6 @@ class GraphingCalculatorApp(App):
         label = Label(size_hint_y=None, text='Python Graphing Calculator')
         grid_layout.add_widget(label)
         grid_layout.add_widget(graph)
-
-        # app = GraphPlot()
 
         return grid_layout
 
