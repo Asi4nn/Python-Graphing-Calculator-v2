@@ -6,3 +6,5 @@ Original: https://github.com/Leo-Wang-Toronto/Pygame-Graphing-Calculator
 - Improved GUI
 - Better equation analyser
 - Support for asymtotes
+
+## Discontinued due to the Kivy graph being not optimized for dynamic changes
