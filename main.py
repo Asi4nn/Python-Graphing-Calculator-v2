@@ -22,8 +22,8 @@ class GraphPlot(RelativeLayout):
         self.x_range = 10
         self.range_multiplier = [2, 2.5, 2]
         self.graph = Graph(xlabel="x", ylabel="y",
-                           x_ticks_minor=self.x_range/10, x_ticks_major=self.x_range/2,
-                           y_ticks_minor=self.y_range/10, y_ticks_major=self.y_range/2,
+                           x_ticks_major=self.x_range/2,
+                           y_ticks_major=self.y_range/2,
                            y_grid_label=True, x_grid_label=True, x_grid=True, y_grid=True,
                            xmin=-self.x_range, xmax=self.x_range, ymin=-self.y_range, ymax=self.y_range, draw_border=False)
         # graph.size = (1200, 400)
@@ -51,7 +51,6 @@ class GraphPlot(RelativeLayout):
                 self.zoomOut()
             elif touch.button == 'scrolldown':
                 self.zoomIn()
-        return True
 
 
     def zoomIn(self):
@@ -75,8 +74,8 @@ class GraphPlot(RelativeLayout):
     def update(self):
         self.remove_widget(self.graph)
         self.graph = Graph(xlabel="x", ylabel="y",
-                           x_ticks_minor=self.x_range/10, x_ticks_major=self.x_range/2,
-                           y_ticks_minor=self.y_range/10, y_ticks_major=self.y_range/2,
+                           x_ticks_major=self.x_range/2,
+                           y_ticks_major=self.y_range/2,
                            y_grid_label=True, x_grid_label=True, x_grid=True, y_grid=True,
                            xmin=-self.x_range, xmax=self.x_range, ymin=-self.y_range, ymax=self.y_range, draw_border=False)
         self.plot = MeshLinePlot(color=[1, 1, 1, 1])
